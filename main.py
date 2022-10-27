@@ -100,7 +100,7 @@ class Message(discord.ui.Modal):
         self.description = discord.ui.TextInput(
             label = "Content of the message",
             style = discord.TextInputStyle.paragraph,
-            placeholder = "This is the message that will be sentt",
+            placeholder = "This is the message that will be sent",
             required = True
         )
         self.add_item(self.description)
@@ -128,6 +128,6 @@ async def award(interaction: discord.Interaction, house: str = discord.SlashOpti
     old_points = int(channel.name.split(":")[1][1:])
     new_points = old_points + points
     await channel.edit(name = f"{house}: {new_points}")
-    await interaction.send("Points awarded")
+    await interaction.send("Points awarded", ephemeral = True)
 
 bot.run(token)
