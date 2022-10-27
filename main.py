@@ -32,7 +32,7 @@ class Potternews(discord.ui.Modal):
         self.add_item(self.description)
     
     async def callback(self, interaction: discord.Interaction) -> None:
-        announcements = await bot.fetch_channel(1035075167669469214)
+        announcements = await bot.fetch_channel(1035093863477555230)
         potternews_embed = discord.Embed(title = "New PotterNews edition!", description = self.description.value, colour = discord.Colour.blue())
         await announcements.send(embed = potternews_embed)
         await interaction.send("Edition sent!", ephemeral = True)
@@ -56,7 +56,7 @@ class Pottertube(discord.ui.Modal):
         self.add_item(self.description)
     
     async def callback(self, interaction: discord.Interaction) -> None:
-        announcements = await bot.fetch_channel(1035075167669469214)
+        announcements = await bot.fetch_channel(1035093863477555230)
         pottertube_embed = discord.Embed(title = "New PotterTube video!", description = self.description.value, colour = discord.Colour.blue())
         await announcements.send(embed = pottertube_embed)
         await interaction.send("Video sent!", ephemeral = True)
@@ -80,7 +80,7 @@ class Event(discord.ui.Modal):
         self.add_item(self.description)
     
     async def callback(self, interaction: discord.Interaction) -> None:
-        announcements = await bot.fetch_channel(1035075167669469214)
+        announcements = await bot.fetch_channel(1035093863477555230)
         event_embed = discord.Embed(title = "New event!", description = self.description.value, colour = discord.Colour.blue())
         await announcements.send(embed = event_embed)
         await interaction.send("Event sent!", ephemeral = True)
