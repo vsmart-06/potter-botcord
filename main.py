@@ -15,7 +15,7 @@ async def on_ready():
     my_user = await bot.fetch_user(706855396828250153)
     await my_user.send("Expelliarmus!")
 
-@bot.slash_command(name = "new", description = "Create something new")
+@bot.slash_command(name = "new", description = "Create something new", default_member_permissions = discord.Permissions(administrator = True))
 async def new():
     pass
 
@@ -115,7 +115,7 @@ async def message(interaction: discord.Interaction, channel: discord.abc.GuildCh
     modal = Message(channel)
     await interaction.response.send_modal(modal)
 
-@bot.slash_command(name = "award", description = "Award points to a house")
+@bot.slash_command(name = "award", description = "Award points to a house", default_member_permissions = discord.Permissions(administrator = True))
 async def award(interaction: discord.Interaction, house: str = discord.SlashOption(name = "house", description = "The house to which the points have to be awarded", choices = ["Gryffindor", "Hufflepuff", "Ravenclaw", "Slytherin"], required = True), points: int = discord.SlashOption(name = "points", description = "The number of points to be awarded", required = True)):
     if house == "Gryffindor":
         channel = await bot.fetch_channel(1035088045067743283)
