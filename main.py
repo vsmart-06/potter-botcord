@@ -116,7 +116,7 @@ async def message(interaction: discord.Interaction, channel: discord.abc.GuildCh
     await interaction.response.send_modal(modal)
 
 @bot.slash_command(name = "award", description = "Award points to a house", default_member_permissions = discord.Permissions(administrator = True))
-async def award(interaction: discord.Interaction, house: str = discord.SlashOption(name = "house", description = "The house to which the points have to be awarded", choices = ["Gryffindor", "Hufflepuff", "Ravenclaw", "Slytherin"], required = True), points: int = discord.SlashOption(name = "points", description = "The number of points to be awarded", required = True)):
+async def award(interaction: discord.Interaction, house: str = discord.SlashOption(name = "house", description = "The house to which the points have to be awarded", choices = ["Gryffindor", "Hufflepuff", "Ravenclaw", "Slytherin"], required = True), points: int = discord.SlashOption(name = "points", description = "The number of points to be awarded", required = True), user: discord.Member = discord.SlashOption(name = "user", description = "The user who earned the points", required = False)):
     if house == "Gryffindor":
         channel = await bot.fetch_channel(1035088045067743283)
     elif house == "Hufflepuff":
@@ -128,6 +128,9 @@ async def award(interaction: discord.Interaction, house: str = discord.SlashOpti
     old_points = int(channel.name.split(":")[1][1:])
     new_points = old_points + points
     await channel.edit(name = f"{house}: {new_points}")
+    if user:
+        points_logs = await bot.fetch_channel(1035454847660609536)
+        await points_logs.send(f"{user.mention} earned {points} points for {house}!")
     await interaction.send("Points awarded", ephemeral = True)
 
 bot.run(token)
