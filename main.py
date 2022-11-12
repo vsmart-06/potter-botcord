@@ -132,7 +132,7 @@ class Award(discord.ui.Modal):
         self.house = house
         self.points = points
 
-        super().__init__("Points awarded!", timeout = None)
+        super().__init__("Awarding points!", timeout = None)
 
         self.description = discord.ui.TextInput(
             label = "Content of the message",
