@@ -97,6 +97,14 @@ class Message(discord.ui.Modal):
 
         super().__init__("New message!", timeout = None)
 
+        self.name = discord.ui.TextInput(
+            label = "Title of the message",
+            style = discord.TextInputStyle.short,
+            placeholder = "This is the title of the message that will be sent",
+            required = False
+        )
+        self.add_item(self.name)
+
         self.description = discord.ui.TextInput(
             label = "Content of the message",
             style = discord.TextInputStyle.paragraph,
@@ -106,7 +114,10 @@ class Message(discord.ui.Modal):
         self.add_item(self.description)
     
     async def callback(self, interaction: discord.Interaction) -> None:
-        message_embed = discord.Embed(title = "New message!", description = self.description.value, colour = discord.Colour.blue())
+        title = self.name.value
+        if not self.name.value:
+            title = "New message!"
+        message_embed = discord.Embed(title = title, description = self.description.value, colour = discord.Colour.blue())
         await self.channel.send(embed = message_embed)
         await interaction.send("Message sent!", ephemeral = True)
 
@@ -115,22 +126,48 @@ async def message(interaction: discord.Interaction, channel: discord.abc.GuildCh
     modal = Message(channel)
     await interaction.response.send_modal(modal)
 
+class Award(discord.ui.Modal):
+    def __init__(self, channel: discord.TextChannel, house: str, points: int):
+        self.channel = channel
+        self.house = house
+        self.points = points
+
+        super().__init__("Points awarded!", timeout = None)
+
+        self.description = discord.ui.TextInput(
+            label = "Content of the message",
+            style = discord.TextInputStyle.paragraph,
+            placeholder = "This is the message that will be sent",
+            required = False
+        )
+        self.add_item(self.description)
+    
+    async def callback(self, interaction: discord.Interaction):
+        old_points = int(self.channel.name.split(":")[1][1:])
+        new_points = old_points + self.points
+        await self.channel.edit(name = f"{self.house}: {new_points}")
+        if self.description.value:
+            points_logs = await bot.fetch_channel(1035454847660609536)
+            await points_logs.send(f'''{self.description.value}
+
+<#1035088045067743283>
+<#1035088097341358160>
+<#1035088147685576714>
+<#1035088203037810729>
+''')
+        await interaction.send("Points awarded!", ephemeral = True)
+        
+
 @bot.slash_command(name = "award", description = "Award points to a house", default_member_permissions = discord.Permissions(administrator = True))
-async def award(interaction: discord.Interaction, house: str = discord.SlashOption(name = "house", description = "The house to which the points have to be awarded", choices = ["Gryffindor", "Hufflepuff", "Ravenclaw", "Slytherin"], required = True), points: int = discord.SlashOption(name = "points", description = "The number of points to be awarded", required = True), user: discord.Member = discord.SlashOption(name = "user", description = "The user who earned the points", required = False)):
+async def award(interaction: discord.Interaction, house: str = discord.SlashOption(name = "house", description = "The house to which the points have to be awarded", choices = ["Gryffindor", "Hufflepuff", "Ravenclaw", "Slytherin"], required = True), points: int = discord.SlashOption(name = "points", description = "The number of points to be awarded", required = True)):
     if house == "Gryffindor":
         channel = await bot.fetch_channel(1035088045067743283)
     elif house == "Hufflepuff":
         channel = await bot.fetch_channel(1035088097341358160)
     elif house == "Ravenclaw":
         channel = await bot.fetch_channel(1035088147685576714)
-    else:
+    elif house == "Slytherin":
         channel = await bot.fetch_channel(1035088203037810729)
-    old_points = int(channel.name.split(":")[1][1:])
-    new_points = old_points + points
-    await channel.edit(name = f"{house}: {new_points}")
-    if user:
-        points_logs = await bot.fetch_channel(1035454847660609536)
-        await points_logs.send(f"{user.mention} earned {points} points for {house}!")
-    await interaction.send("Points awarded", ephemeral = True)
+    await interaction.response.send_modal(Award(channel, house, points))
 
 bot.run(token)
