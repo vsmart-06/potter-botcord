@@ -168,6 +168,7 @@ async def award(interaction: discord.Interaction, house: str = discord.SlashOpti
         channel = await bot.fetch_channel(1035088147685576714)
     elif house == "Slytherin":
         channel = await bot.fetch_channel(1035088203037810729)
-    await interaction.response.send_modal(Award(channel, house, points))
+    modal = Award(channel, house, points)
+    await interaction.response.send_modal(modal)
 
 bot.run(token)
